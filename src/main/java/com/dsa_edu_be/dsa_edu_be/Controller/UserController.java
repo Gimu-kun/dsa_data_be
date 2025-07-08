@@ -2,8 +2,8 @@ package com.dsa_edu_be.dsa_edu_be.Controller;
 
 import com.dsa_edu_be.dsa_edu_be.Entity.User;
 import com.dsa_edu_be.dsa_edu_be.Service.UserService;
-import com.dsa_edu_be.dsa_edu_be.dto.request.UserCreationRequest;
-import com.dsa_edu_be.dsa_edu_be.dto.request.UserUpdateRequest;
+import com.dsa_edu_be.dsa_edu_be.dto.request.User.UserCreationRequest;
+import com.dsa_edu_be.dsa_edu_be.dto.request.User.UserUpdateRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

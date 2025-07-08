@@ -2,8 +2,8 @@ package com.dsa_edu_be.dsa_edu_be.Service;
 
 import com.dsa_edu_be.dsa_edu_be.Entity.User;
 import com.dsa_edu_be.dsa_edu_be.Repository.UserRepository;
-import com.dsa_edu_be.dsa_edu_be.dto.request.UserCreationRequest;
-import com.dsa_edu_be.dsa_edu_be.dto.request.UserUpdateRequest;
+import com.dsa_edu_be.dsa_edu_be.dto.request.User.UserCreationRequest;
+import com.dsa_edu_be.dsa_edu_be.dto.request.User.UserUpdateRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +23,11 @@ public class UserService {
 
     public List<User> getAllUser(){
       return userRepository.findAll();
+    };
+
+    public boolean checkIdExitst(String id){
+        Optional<User> user = userRepository.findById(id);
+        return user.isPresent();
     };
 
     public User getUserById(String id){

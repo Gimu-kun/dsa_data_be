@@ -1,4 +1,4 @@
-package com.dsa_edu_be.dsa_edu_be.dto.request;
+package com.dsa_edu_be.dsa_edu_be.dto.request.User;
 
 import com.dsa_edu_be.dsa_edu_be.Enum.UserRole;
 
