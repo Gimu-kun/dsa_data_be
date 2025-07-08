@@ -43,4 +43,9 @@ public class DifficultyController {
     public ResponseEntity<String> updateDifficulty(@PathVariable String id,@RequestBody DifficultyUpdateRequest request){
         return difficultyService.updateDifficulty(id,request);
     };
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteDifficulty(@PathVariable String id){
+        return difficultyService.deleteDifficulty(id);
+    }
 }

@@ -91,7 +91,7 @@ public class DifficultyService {
             }
             Difficulty diff = OptDiff.get();
             //Validate and update title
-            if (!request.getTitle().isBlank()){
+            if (!request.getTitle().isBlank() || request.getTitle() != null){
                 diff.setTitle(request.getTitle());
             }else{
                 throw new ResponseStatusException(HttpStatus.CONFLICT,"Title cannot be empty!");
@@ -223,6 +223,15 @@ public class DifficultyService {
         }catch(Exception ex){
             System.out.println(ex.toString());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Create difficulty error");
+        }
+    }
+
+    public ResponseEntity<String> deleteDifficulty(String id) {
+        try{
+            difficultyRepository.deleteById(id);
+            return new ResponseEntity<>("Delete difficulty successfully",HttpStatus.OK);
+        }catch(Exception ex){
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,ex.toString());
         }
     }
 }
