@@ -3,6 +3,7 @@ package com.dsa_edu_be.dsa_edu_be.Service;
 import com.dsa_edu_be.dsa_edu_be.Entity.Difficulty;
 import com.dsa_edu_be.dsa_edu_be.Entity.Matrix;
 import com.dsa_edu_be.dsa_edu_be.Repository.MatrixRepository;
+import com.dsa_edu_be.dsa_edu_be.Utils.ArrayUtils;
 import com.dsa_edu_be.dsa_edu_be.Utils.JsonUtils;
 import com.dsa_edu_be.dsa_edu_be.dto.request.Matrix.MatrixCreationRequest;
 import com.dsa_edu_be.dsa_edu_be.dto.request.Matrix.MatrixUpdateRequest;
@@ -26,6 +27,8 @@ public class MatrixService {
     JsonUtils jsonUtils;
     @Autowired
     UserService userService;
+    @Autowired
+    ArrayUtils arrayUtils;
 
     private boolean checkTitleExist(String title){
         Optional<Matrix> matrix = matrixRepository.findByTitle(title);
@@ -56,8 +59,8 @@ public class MatrixService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Title cannot be empty!");
         }
 
-        if(!jsonUtils.isValidJson(request.getKl_matrix())){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Knowledge matrix is not JSON format!");
+        if(arrayUtils.isJsonArray(request.getKl_matrix())){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Knowledge matrix is not JSON Array format!");
         }
 
         if(!userService.checkIdExitst(request.getCreated_by())){
@@ -106,7 +109,7 @@ public class MatrixService {
         }
 
         if (!request.getKl_matrix().isBlank() || !(request.getKl_matrix() == null)){
-            if (jsonUtils.isValidJson(request.getKl_matrix())){
+            if (arrayUtils.isJsonArray(request.getKl_matrix())){
                 matrix.setKl_matrix(request.getKl_matrix());
             }else{
                 throw new ResponseStatusException(HttpStatus.CONFLICT,"Knowledge matrix is not valid JSON format!");
