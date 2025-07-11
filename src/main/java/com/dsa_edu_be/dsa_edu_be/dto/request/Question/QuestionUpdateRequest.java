@@ -1,16 +1,11 @@
-package com.dsa_edu_be.dsa_edu_be.Entity;
+package com.dsa_edu_be.dsa_edu_be.dto.request.Question;
 
 import com.dsa_edu_be.dsa_edu_be.Enum.QuestionStatus;
 import com.dsa_edu_be.dsa_edu_be.Enum.QuestionTypes;
 
-import jakarta.persistence.*;
-
 import java.time.LocalDateTime;
 
-@Entity
-public class Question {
-    @Id
-    private String id;
+public class QuestionUpdateRequest {
     private QuestionTypes type;
     private String content;
     private String image;
@@ -26,18 +21,7 @@ public class Question {
     private Float disc_level = 0.5F;
     private Integer chapter_id;
     private QuestionStatus status;
-    private String created_by;
     private String updated_by;
-    private LocalDateTime created_at = LocalDateTime.now();
-    private LocalDateTime updated_at = LocalDateTime.now();
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
 
     public QuestionTypes getType() {
         return type;
@@ -159,35 +143,11 @@ public class Question {
         this.status = status;
     }
 
-    public String getCreated_by() {
-        return created_by;
-    }
-
-    public void setCreated_by(String created_by) {
-        this.created_by = created_by;
-    }
-
     public String getUpdated_by() {
         return updated_by;
     }
 
     public void setUpdated_by(String updated_by) {
         this.updated_by = updated_by;
-    }
-
-    public LocalDateTime getCreated_at() {
-        return created_at;
-    }
-
-    public void setCreated_at(LocalDateTime created_at) {
-        this.created_at = created_at;
-    }
-
-    public LocalDateTime getUpdated_at() {
-        return updated_at;
-    }
-
-    public void setUpdated_at(LocalDateTime updated_at) {
-        this.updated_at = updated_at;
     }
 }

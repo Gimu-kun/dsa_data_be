@@ -24,11 +24,7 @@ public class BloomController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Bloom> getBloomById(@PathVariable String id){
-        try{
-            Integer intId = Integer.valueOf(id);
-            return bloomService.getBloomById(intId);
-        }catch(Exception ex){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,ex.toString());
-        }
+        Integer intId = Integer.valueOf(id);
+        return bloomService.getBloomById(intId);
     }
 }
