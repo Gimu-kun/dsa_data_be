@@ -1,16 +1,27 @@
 package com.dsa_edu_be.dsa_edu_be.dto.request.User;
 
 import com.dsa_edu_be.dsa_edu_be.Enum.UserRole;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 import java.time.LocalDateTime;
 
-public class UserCreationRequest {
+public class UserRequestDto {
+    @NotNull(message = "Username cannot be empty")
+    @Size(min = 8,max = 36,message = "Username must have between 8-36 characters")
     private String username;
+
+    @NotNull(message = "Passwords cannot be empty")
+    @Size(min = 8,max = 36,message = "Passwords must have between 8-36 characters")
     private String passwords;
+
+    @NotNull(message = "Fullname field cannot be empty")
     private String fullname;
+
+    @NotNull(message = "Role cannot be empty")
     private UserRole role;
-    private LocalDateTime created_at;
-    private LocalDateTime updated_at;
+
+    private LocalDateTime updated_at = LocalDateTime.now();
 
     public String getUsername() {
         return username;
@@ -42,14 +53,6 @@ public class UserCreationRequest {
 
     public void setRole(UserRole role) {
         this.role = role;
-    }
-
-    public LocalDateTime getCreated_at() {
-        return created_at;
-    }
-
-    public void setCreated_at(LocalDateTime created_at) {
-        this.created_at = created_at;
     }
 
     public LocalDateTime getUpdated_at() {
