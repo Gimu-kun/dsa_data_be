@@ -17,8 +17,8 @@ public class User {
     private String fullname;
     @Enumerated(EnumType.STRING)
     private UserRole role;
-    private LocalDateTime created_at;
-    private LocalDateTime updated_at;
+    private LocalDateTime created_at = LocalDateTime.now();
+    private LocalDateTime updated_at = LocalDateTime.now();
 
     public User(){
     }
@@ -29,8 +29,6 @@ public class User {
         this.passwords = passwords;
         this.fullname = fullname;
         this.role = role;
-        updated_at = LocalDateTime.now();
-        created_at = LocalDateTime.now();
     }
 
     @Override

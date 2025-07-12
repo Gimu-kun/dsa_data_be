@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Size;
 
 import java.time.LocalDateTime;
 
-public class UserRequestDto {
+public class UserCreationRequest {
     @NotNull(message = "Username cannot be empty")
     @Size(min = 8,max = 36,message = "Username must have between 8-36 characters")
     private String username;
@@ -20,8 +20,6 @@ public class UserRequestDto {
 
     @NotNull(message = "Role cannot be empty")
     private UserRole role;
-
-    private LocalDateTime updated_at = LocalDateTime.now();
 
     public String getUsername() {
         return username;
@@ -53,13 +51,5 @@ public class UserRequestDto {
 
     public void setRole(UserRole role) {
         this.role = role;
-    }
-
-    public LocalDateTime getUpdated_at() {
-        return updated_at;
-    }
-
-    public void setUpdated_at(LocalDateTime updated_at) {
-        this.updated_at = updated_at;
     }
 }
