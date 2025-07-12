@@ -84,80 +84,85 @@ public class DifficultyService {
 
     public ResponseEntity<String> updateDifficulty(String id,DifficultyUpdateRequest request){
         try{
-            System.out.println(id);
+            //Validate and find relate difficulty
             Optional<Difficulty> OptDiff = getDifficultyById(id);
             if (OptDiff.isEmpty()){
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Not found this difficulty!");
             }
             Difficulty diff = OptDiff.get();
+
             //Validate and update title
             if (!request.getTitle().isBlank() || request.getTitle() != null){
                 diff.setTitle(request.getTitle());
             }else{
                 throw new ResponseStatusException(HttpStatus.CONFLICT,"Title cannot be empty!");
             }
-            //Validate and update percentage of blooms
-            if(request.getR_percent() == null){
-                request.setR_percent(diff.getR_percent());
-            }
-            if(request.getU_percent() == null){
-                request.setU_percent(diff.getU_percent());
-            }
-            if(request.getAn_percent() == null){
-                request.setAn_percent(diff.getAn_percent());
-            }
-            if(request.getAp_percent() == null){
-                request.setAp_percent(diff.getAp_percent());
-            }
 
-            if (request.getR_percent() + request.getU_percent() + request.getAp_percent() + request.getAn_percent() == 100){
-                diff.setR_percent(request.getR_percent());
-                diff.setU_percent(request.getU_percent());
-                diff.setAp_percent(request.getAp_percent());
-                diff.setAn_percent(request.getAn_percent());
+            //Validate and update percentage of blooms
+            Map<String,Float> percentage = Map.of(
+                    "R",Optional.ofNullable(request.getR_percent()).orElse(diff.getR_percent()),
+                    "U",Optional.ofNullable(request.getU_percent()).orElse(diff.getU_percent()),
+                    "AN",Optional.ofNullable(request.getAn_percent()).orElse(diff.getAn_percent()),
+                    "AP",Optional.ofNullable(request.getAp_percent()).orElse(diff.getAp_percent())
+            );
+            double total = percentage.values().stream().mapToDouble(Float::doubleValue).sum();
+
+            //Validate all bloom percentage must have summary equal 100%
+            if (Math.abs(total - 100.0) < 0.001){
+                diff.setR_percent(percentage.get("R"));
+                diff.setU_percent(percentage.get("U"));
+                diff.setAp_percent(percentage.get("AP"));
+                diff.setAn_percent(percentage.get("AN"));
             }else{
                 throw new ResponseStatusException(HttpStatus.CONFLICT,"Total percent of R U AP AN need exactly 100%!");
             }
 
-            //Validate and update range format
-            if (request.getDiff_range()==null){
-                request.setDiff_range(diff.getDiff_range());
+            //Validate and update diff range format
+            if (request.getDiff_range() != null){
+                if (checkRangeFormat(request.getDiff_range())){
+                    diff.setDiff_range(request.getDiff_range());
+                }else{
+                    throw new ResponseStatusException(HttpStatus.CONFLICT,"Diff Range Format is not valid!");
+                }
             }
-            if (request.getDisc_range()==null){
-                request.setDisc_range(diff.getDisc_range());
-            }
-            if (checkRangeFormat(request.getDiff_range()) && checkRangeFormat(request.getDisc_range())){
-                diff.setDiff_range(request.getDiff_range());
-                diff.setDisc_range(request.getDisc_range());
-            }else{
-                throw new ResponseStatusException(HttpStatus.CONFLICT,"Range Format is not valid!");
+
+            //Validate and update disc range format
+            if (request.getDisc_range() != null){
+                if (checkRangeFormat(request.getDisc_range())){
+                    diff.setDisc_range(request.getDisc_range());
+                }else{
+                    throw new ResponseStatusException(HttpStatus.CONFLICT,"Disc Range Format is not valid!");
+                }
             }
 
             //Validate and set chapter_range
-            if (request.getChapter_range()==null){
-                request.setChapter_range(diff.getChapter_range());
+            if (request.getChapter_range() != null){
+                if (checkChapterListFormat(request.getChapter_range())){
+                    diff.setChapter_range(request.getChapter_range());
+                }else {
+                    throw new ResponseStatusException(HttpStatus.CONFLICT, "Chapter List is not valid!");
+                }
             }
-            if (checkChapterListFormat(request.getChapter_range())){
-                diff.setChapter_range(request.getChapter_range());
-            }else{
-                throw new ResponseStatusException(HttpStatus.CONFLICT,"Chapter List is not valid!");
-            }
+
             //Validate Question list format
-            if (request.getQuestion_types()==null){
-                request.setQuestion_types(diff.getQuestion_types());
+            if (request.getQuestion_types() != null){
+                if(checkQuestionListFormat(request.getQuestion_types())){
+                    diff.setQuestion_types(request.getQuestion_types());
+                }else{
+                    throw new ResponseStatusException(HttpStatus.CONFLICT,"Question type format is not valid!");
+                }
             }
-            if(checkQuestionListFormat(request.getQuestion_types())){
-                diff.setQuestion_types(request.getQuestion_types());
-            }else{
-                throw new ResponseStatusException(HttpStatus.CONFLICT,"Question type format is not valid!");
-            }
+
+
             //Check updater existed
             if (!userService.checkIdExitst(request.getUpdated_by())){
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Updater not found!");
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Updater not found!");
             }
+
             //Set updater detail
             diff.setUpdated_by(request.getUpdated_by());
             diff.setUpdate_at(LocalDateTime.now());
+
             //Save updated difficulty to database
             difficultyRepository.save(diff);
             return new ResponseEntity<>("Update difficulty successfully",HttpStatus.OK);
@@ -170,53 +175,52 @@ public class DifficultyService {
     public ResponseEntity<String> createDifficulty(DifficultyCreationRequest request){
         try{
             Difficulty diff = new Difficulty();
+
             //Generate UUID
             diff.setId(UUID.randomUUID().toString());
-            //Validate and set title
-            if (!request.getTitle().isBlank()){
-                diff.setTitle(request.getTitle());
-            }else{
-                throw new ResponseStatusException(HttpStatus.CONFLICT,"Title cannot be empty!");
-            }
+
             //Validate and set percentage of bloom
-            if (request.getR_percent() + request.getU_percent() + request.getAp_percent() + request.getAn_percent() == 100){
-                diff.setR_percent(request.getR_percent());
-                diff.setU_percent(request.getU_percent());
-                diff.setAp_percent(request.getAp_percent());
-                diff.setAn_percent(request.getAn_percent());
-            }else{
+            if (!(request.getR_percent() + request.getU_percent() + request.getAp_percent() + request.getAn_percent() == 100)){
                 throw new ResponseStatusException(HttpStatus.CONFLICT,"Total percent of R U AP AN need exactly 100%!");
             }
+            diff.setR_percent(request.getR_percent());
+            diff.setU_percent(request.getU_percent());
+            diff.setAp_percent(request.getAp_percent());
+            diff.setAn_percent(request.getAn_percent());
+
             //Validate and set range of diff , disc
-            if (checkRangeFormat(request.getDisc_range()) && checkRangeFormat(request.getDiff_range())){
-                diff.setDiff_range(request.getDiff_range());
-                diff.setDisc_range(request.getDisc_range());
-            }else{
-                throw new ResponseStatusException(HttpStatus.CONFLICT,"Range Format is not valid!");
+            if(!checkRangeFormat(request.getDisc_range())){
+                throw new ResponseStatusException(HttpStatus.CONFLICT,"Disc Range Format is not valid!");
             }
+
+            if (!checkRangeFormat(request.getDiff_range())){
+                throw new ResponseStatusException(HttpStatus.CONFLICT,"Diff Range Format is not valid!");
+            }
+
+            diff.setDiff_range(request.getDiff_range());
+            diff.setDisc_range(request.getDisc_range());
+
             //Validate and set chapter_range
-            if (checkChapterListFormat(request.getChapter_range())){
-                diff.setChapter_range(request.getChapter_range());
-            }else{
+            if (!checkChapterListFormat(request.getChapter_range())){
                 throw new ResponseStatusException(HttpStatus.CONFLICT,"Chapter List is not valid!");
             }
+            diff.setChapter_range(request.getChapter_range());
+
             //Validate and set question types
-            if(checkQuestionListFormat(request.getQuestion_types())){
-                diff.setQuestion_types(request.getQuestion_types());
-            }else{
+            if(!checkQuestionListFormat(request.getQuestion_types())){
                 throw new ResponseStatusException(HttpStatus.CONFLICT,"Question type format is not valid!");
             }
+            diff.setQuestion_types(request.getQuestion_types());
+
             //Validate and set Creator and updater
             if (!userService.checkIdExitst(request.getCreated_by())){
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Creator not found!");
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Creator not found!");
             }
-            diff.setUpdated_by(request.getUpdated_by());
+            diff.setUpdated_by(request.getCreated_by());
             diff.setCreated_by(request.getCreated_by());
-            if (!userService.checkIdExitst(request.getUpdated_by())){
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Updater not found!");
-            }
             diff.setCreated_at(LocalDateTime.now());
             diff.setUpdate_at(LocalDateTime.now());
+
             //Save new difficulty to database
             difficultyRepository.save(diff);
             return new ResponseEntity<>("Create difficulty successfully",HttpStatus.OK);

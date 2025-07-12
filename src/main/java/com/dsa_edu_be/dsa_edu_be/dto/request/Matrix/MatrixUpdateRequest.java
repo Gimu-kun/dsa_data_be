@@ -1,9 +1,15 @@
 package com.dsa_edu_be.dsa_edu_be.dto.request.Matrix;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 public class MatrixUpdateRequest {
     private String difficulty_id;
     private String title;
     private String kl_matrix;
+
+    @NotNull(message = "Updater id cannot be empty")
+    @NotBlank(message = "Updater id cannot be blank")
     private String updated_by;
 
     public String getDifficulty_id() {

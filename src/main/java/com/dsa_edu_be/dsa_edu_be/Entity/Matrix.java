@@ -15,20 +15,18 @@ public class Matrix {
     private String kl_matrix;
     private String created_by;
     private String updated_by;
-    private LocalDateTime created_at;
-    private LocalDateTime updated_at;
+    private LocalDateTime created_at = LocalDateTime.now();
+    private LocalDateTime updated_at = LocalDateTime.now();
 
     public Matrix(){}
 
-    public Matrix( String difficulty_id, String title, String kl_matrix, String created_by, String updated_by) {
+    public Matrix( String difficulty_id, String title, String kl_matrix, String created_by) {
         this.id = UUID.randomUUID().toString();
         this.difficulty_id = difficulty_id;
         this.title = title;
         this.kl_matrix = kl_matrix;
         this.created_by = created_by;
-        this.updated_by = updated_by;
-        this.created_at = LocalDateTime.now();
-        this.updated_at = LocalDateTime.now();
+        this.updated_by = created_by;
     }
 
     public String getId() {

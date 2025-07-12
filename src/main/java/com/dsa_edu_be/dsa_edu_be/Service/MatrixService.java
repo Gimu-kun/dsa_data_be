@@ -50,49 +50,49 @@ public class MatrixService {
 
 
     public ResponseEntity<String> createMatrix(MatrixCreationRequest request) {
+        //Validate difficulty id
         Optional<Difficulty> difficulty = difficultyService.getDifficultyById(request.getDifficulty_id());
         if (difficulty.isEmpty()){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Difficulty not found!");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Difficulty not found!");
         }
 
-        if (request.getTitle().isBlank() || request.getTitle() == null){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Title cannot be empty!");
-        }
 
+        //Validate knowledge matrix
         if(arrayUtils.isJsonArray(request.getKl_matrix())){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Knowledge matrix is not JSON Array format!");
+            throw new ResponseStatusException(HttpStatus.CONFLICT,"Knowledge matrix is not JSON Array format!");
         }
 
+        //Validate creator id
         if(!userService.checkIdExitst(request.getCreated_by())){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Creator ID is not found!");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Creator ID is not found!");
         }
 
+        //Create new object
         Matrix matrix = new Matrix(
                 request.getDifficulty_id(),
                 request.getTitle(),
                 request.getKl_matrix(),
-                request.getCreated_by(),
-                request.getUpdated_by()
+                request.getCreated_by()
         );
         try{
+            //Save object to database
             matrixRepository.save(matrix);
-            return new ResponseEntity<>("Create matrix successed",HttpStatus.OK);
+            return new ResponseEntity<>("Create matrix successfully",HttpStatus.OK);
         }catch(Exception ex){
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,ex.toString());
         }
     }
 
     public ResponseEntity<Matrix> updateMatrix(String id, MatrixUpdateRequest request) {
-        if(id.isBlank()){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Matrix ID cannot be empty!");
-        }
+        //Find object matrix in database
         Optional<Matrix> OptMatrix = matrixRepository.findById(id);
         if (OptMatrix.isEmpty()){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Matrix is not found!");
         }
-
         Matrix matrix = OptMatrix.get();
-        if(!request.getDifficulty_id().isBlank() || !(request.getDifficulty_id() == null)){
+
+        //Validate difficulty id
+        if(request.getDifficulty_id() != null){
             Optional<Difficulty> difficulty = difficultyService.getDifficultyById(request.getDifficulty_id());
             if (difficulty.isEmpty()){
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Difficulty not found!");
@@ -100,7 +100,8 @@ public class MatrixService {
             matrix.setDifficulty_id(request.getDifficulty_id());
         }
 
-        if(!request.getTitle().isBlank() || !(request.getTitle() == null)){
+        //Validate title
+        if(request.getTitle() != null && !request.getTitle().isBlank()){
             if(!checkTitleExist(request.getTitle())){
                 matrix.setTitle(request.getTitle());
             }else{
@@ -108,7 +109,8 @@ public class MatrixService {
             }
         }
 
-        if (!request.getKl_matrix().isBlank() || !(request.getKl_matrix() == null)){
+        //Validate knowledge matrix
+        if (!request.getKl_matrix().isBlank() && request.getKl_matrix() != null){
             if (arrayUtils.isJsonArray(request.getKl_matrix())){
                 matrix.setKl_matrix(request.getKl_matrix());
             }else{
@@ -116,18 +118,17 @@ public class MatrixService {
             }
         }
 
-        if (request.getUpdated_by().isBlank() || request.getUpdated_by() == null){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Updater cannot be empty!");
+        //Validate updater id
+        if (userService.checkIdExitst(request.getUpdated_by())){
+            matrix.setUpdated_by(request.getUpdated_by());
         }else{
-            if (userService.checkIdExitst(request.getUpdated_by())){
-                matrix.setUpdated_by(request.getUpdated_by());
-            }else{
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Updater ID not found!");
-            }
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Updater ID not found!");
         }
-        matrix.setUpdated_at(LocalDateTime.now());
 
+        //Set updated time
+        matrix.setUpdated_at(LocalDateTime.now());
         try{
+            //Save update detail to database
             matrixRepository.save(matrix);
             return new ResponseEntity<>(matrix, HttpStatus.OK);
         }catch(Exception ex){

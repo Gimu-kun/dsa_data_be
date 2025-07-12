@@ -4,6 +4,7 @@ import com.dsa_edu_be.dsa_edu_be.Entity.Matrix;
 import com.dsa_edu_be.dsa_edu_be.Service.MatrixService;
 import com.dsa_edu_be.dsa_edu_be.dto.request.Matrix.MatrixCreationRequest;
 import com.dsa_edu_be.dsa_edu_be.dto.request.Matrix.MatrixUpdateRequest;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,7 +30,7 @@ public class MatrixController {
     }
 
     @PostMapping
-    public ResponseEntity<String> createMatrix(@RequestBody MatrixCreationRequest request){
+    public ResponseEntity<String> createMatrix(@Valid @RequestBody MatrixCreationRequest request){
         return matrixService.createMatrix(request);
     }
 

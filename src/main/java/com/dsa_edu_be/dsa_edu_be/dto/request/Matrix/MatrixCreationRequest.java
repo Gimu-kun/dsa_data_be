@@ -1,13 +1,25 @@
 package com.dsa_edu_be.dsa_edu_be.dto.request.Matrix;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 import java.time.LocalDateTime;
 
 public class MatrixCreationRequest {
+    @NotNull(message = "Difficulty id cannot be empty")
     private String difficulty_id;
+
+    @NotNull(message = "Title cannot be empty")
+    @NotBlank(message = "Title cannot be blank")
     private String title;
+
+    @NotNull(message = "Knowledge matrix cannot be empty")
+    @NotBlank(message = "Knowledge matrix cannot be blank")
     private String kl_matrix;
+
+    @NotNull(message = "Creator id cannot be empty")
+    @NotBlank(message = "Creator id cannot be blank")
     private String created_by;
-    private String updated_by;
 
     public String getDifficulty_id() {
         return difficulty_id;
@@ -41,11 +53,4 @@ public class MatrixCreationRequest {
         this.created_by = created_by;
     }
 
-    public String getUpdated_by() {
-        return updated_by;
-    }
-
-    public void setUpdated_by(String updated_by) {
-        this.updated_by = updated_by;
-    }
 }
