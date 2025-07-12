@@ -1,19 +1,51 @@
 package com.dsa_edu_be.dsa_edu_be.dto.request.Difficulty;
 
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+
 import java.time.LocalDateTime;
 
 public class DifficultyCreationRequest {
+    @NotNull(message = "Title cannot be empty")
+    @Size(min = 8, max = 255, message = "Title must have between 8-255 characters")
     private String title;
+
+    @NotNull(message = "Bloom percentage cannot be empty")
+    @Min(0)
+    @Max(100)
     private Float r_percent;
+
+    @NotNull(message = "Bloom percentage cannot be empty")
+    @Min(0)
+    @Max(100)
     private Float u_percent;
+
+    @NotNull(message = "Bloom percentage cannot be empty")
+    @Min(0)
+    @Max(100)
     private Float ap_percent;
+
+    @NotNull(message = "Bloom percentage cannot be empty")
+    @Min(0)
+    @Max(100)
     private Float an_percent;
+
+    @NotNull(message = "Diff range cannot be empty")
     private String diff_range;
+
+    @NotNull(message = "Disc range cannot be empty")
     private String disc_range;
+
+    @NotNull(message = "Chapter range cannot be empty")
     private String chapter_range;
+
+    @NotNull(message = "Question type cannot be empty")
     private String question_types;
+
+    @NotNull(message = "Creator cannot be empty")
     private String created_by;
-    private String updated_by;
 
     public String getTitle() {
         return title;
@@ -95,11 +127,4 @@ public class DifficultyCreationRequest {
         this.created_by = created_by;
     }
 
-    public String getUpdated_by() {
-        return updated_by;
-    }
-
-    public void setUpdated_by(String updated_by) {
-        this.updated_by = updated_by;
-    }
 }

@@ -4,6 +4,7 @@ import com.dsa_edu_be.dsa_edu_be.Entity.Difficulty;
 import com.dsa_edu_be.dsa_edu_be.Service.DifficultyService;
 import com.dsa_edu_be.dsa_edu_be.dto.request.Difficulty.DifficultyCreationRequest;
 import com.dsa_edu_be.dsa_edu_be.dto.request.Difficulty.DifficultyUpdateRequest;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,7 +36,7 @@ public class DifficultyController {
     };
 
     @PostMapping
-    public ResponseEntity<String> createDiffulty(@RequestBody DifficultyCreationRequest request){
+    public ResponseEntity<String> createDifficulty(@Valid @RequestBody DifficultyCreationRequest request){
         return difficultyService.createDifficulty(request);
     };
 

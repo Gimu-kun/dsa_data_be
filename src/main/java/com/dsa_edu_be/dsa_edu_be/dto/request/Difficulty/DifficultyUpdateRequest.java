@@ -1,5 +1,7 @@
 package com.dsa_edu_be.dsa_edu_be.dto.request.Difficulty;
 
+import jakarta.validation.constraints.*;
+
 public class DifficultyUpdateRequest {
     private String title;
     private Float r_percent;
@@ -10,6 +12,9 @@ public class DifficultyUpdateRequest {
     private String disc_range;
     private String chapter_range;
     private String question_types;
+
+    @NotNull(message = "Updater id cannot be empty")
+    @NotBlank(message = "Updater id cannot be blank")
     private String updated_by;
 
     public String getTitle() {

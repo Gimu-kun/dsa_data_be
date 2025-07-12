@@ -20,8 +20,8 @@ public class Difficulty {
     private String question_types;
     private String created_by;
     private String updated_by;
-    private LocalDateTime created_at;
-    private LocalDateTime updated_at;
+    private LocalDateTime created_at = LocalDateTime.now();
+    private LocalDateTime updated_at = LocalDateTime.now();
 
     public String getId() {
         return id;
